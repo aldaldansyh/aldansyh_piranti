@@ -1,27 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:sesi4/model/feed.dart';
 
-class FeedCard extends StatelessWidget {
+class FeedCard extends StatefulWidget {
+  final Feed feed;
+
   const FeedCard({
     super.key,
+    required this.feed,
   });
 
   @override
+  State<FeedCard> createState() => _FeedCardState();
+}
+
+class _FeedCardState extends State<FeedCard> {
+  @override
   Widget build(BuildContext context) {
-    const url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvfSAm8AIdeGpNIgXwYkdTofJ9LniCrKIYyQ&s';
-    return Card(
+    final user = widget.feed.user;
+    final content = widget.feed.content;
+  
+      return Card(
       child: Column(
         children: [
           //header
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(url),
+              backgroundImage: NetworkImage(user.avatar),
             ),
-              title: Text('Michael'),
-              subtitle: Text('Tasik Malaya'),
+              title: Text(user.name),
+              subtitle: Text(user.place),
               trailing: Icon(Icons.arrow_right),
           ),
           //content
-          Image.network('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSa2PWk1Hb_jJKR_YXFLq-2puf6SACR8XAyg&s',
+          Image.network(content.image,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.width * 0.5,
           fit: BoxFit.cover,
@@ -49,8 +60,8 @@ class FeedCard extends StatelessWidget {
   ],
 ),
           ListTile(
-          title: Text('1.635 Likes',style:TextStyle(fontWeight: FontWeight.bold)),
-          subtitle: Text('Michael: Sunday Funday',style:TextStyle(fontWeight: FontWeight.bold)), 
+          title: Text(content.likes,style:TextStyle(fontWeight: FontWeight.bold)),
+          subtitle: Text(content.description,style:TextStyle(fontWeight: FontWeight.bold)), 
           
           )
         ],
