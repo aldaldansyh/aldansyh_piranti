@@ -14,6 +14,8 @@ class FeedCard extends StatefulWidget {
 }
 
 class _FeedCardState extends State<FeedCard> {
+bool isLiked = false;
+
   @override
   Widget build(BuildContext context) {
     final user = widget.feed.user;
@@ -21,6 +23,7 @@ class _FeedCardState extends State<FeedCard> {
   
       return Card(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //header
           ListTile(
@@ -38,32 +41,70 @@ class _FeedCardState extends State<FeedCard> {
           fit: BoxFit.cover,
           ),
           //footer
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-            Icon(
-              Icons.favorite,
-              color: Colors.pink,
-              size: 24.0,
-              semanticLabel: 'Text to announce in accessibility modes',
+         Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        isLiked ? Icons.favorite : Icons.favorite_border,
+                        color: isLiked ? Colors.red : Colors.black,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isLiked = !isLiked; // Toggle the like state
+                        });
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.comment),
+                      onPressed: () {
+                        // Comment button action
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.share),
+                      onPressed: () {
+                        // Share button action
+                      },
+                    ),
+                  ],
+                ),
+                const Icon(Icons.bookmark_border),
+              ],
             ),
-            Icon(
-              Icons.message,
-              color: Color.fromARGB(255, 0, 0, 0),
-              size: 24.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.feed.content.likes,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Text(
+                      widget.feed.user.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        widget.feed.content.description,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            Icon(
-              Icons.share,
-              color: Color.fromARGB(255, 6, 11, 16),
-              size: 24.0,
-            ),
-  ],
-),
-          ListTile(
-          title: Text(content.likes,style:TextStyle(fontWeight: FontWeight.bold)),
-          subtitle: Text(content.description,style:TextStyle(fontWeight: FontWeight.bold)), 
-          
-          )
+          ),
         ],
       ),
     );
