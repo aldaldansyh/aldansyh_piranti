@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sesi4/controller/feed_controller.dart';
 import 'package:sesi4/model/feed.dart';
 
 class FeedCard extends StatefulWidget {
@@ -10,38 +12,36 @@ class FeedCard extends StatefulWidget {
   });
 
   @override
-  State<FeedCard> createState() => _FeedCardState();
+  _FeedCardState createState() => _FeedCardState();
 }
 
 class _FeedCardState extends State<FeedCard> {
-bool isLiked = false;
+  bool isLiked = false; // State to track if the post is liked
 
   @override
   Widget build(BuildContext context) {
-    final user = widget.feed.user;
-    final content = widget.feed.content;
-  
-      return Card(
+    return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //header
+          // Header
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(user.avatar),
+              backgroundImage: NetworkImage(widget.feed.user.avatar),
             ),
-              title: Text(user.name),
-              subtitle: Text(user.place),
-              trailing: Icon(Icons.arrow_right),
+            title: Text(widget.feed.user.name),
+            subtitle: Text(widget.feed.user.place),
+            trailing: const Icon(Icons.arrow_right),
           ),
-          //content
-          Image.network(content.image,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.width * 0.5,
-          fit: BoxFit.cover,
+          // Content
+          Image.network(
+            widget.feed.content.image,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.width * 0.5,
+            fit: BoxFit.cover,
           ),
-          //footer
-         Padding(
+          // Footer
+          Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,15 +49,14 @@ bool isLiked = false;
                 Row(
                   children: [
                     IconButton(
-                      icon: Icon(
-                        isLiked ? Icons.favorite : Icons.favorite_border,
-                        color: isLiked ? Colors.red : Colors.black,
-                      ),
                       onPressed: () {
-                        setState(() {
-                          isLiked = !isLiked; // Toggle the like state
-                        });
+                        context.read<FeedController>().like(widget.feed);
                       },
+                      icon: Icon(
+                        widget.feed.content.isLike
+                            ? Icons.favorite
+                            : Icons.favorite_outline,
+                      ),
                     ),
                     IconButton(
                       icon: const Icon(Icons.comment),
@@ -73,7 +72,18 @@ bool isLiked = false;
                     ),
                   ],
                 ),
-                const Icon(Icons.bookmark_border),
+                // Tombol Bookmark dengan toggle isBookmarked
+                IconButton(
+                  icon: Icon(
+                    widget.feed.content.isBookmarked
+                        ? Icons.bookmark
+                        : Icons.bookmark_border,
+                  ),
+                  onPressed: () {
+                    // Menggunakan FeedController untuk toggle status bookmark
+                    context.read<FeedController>().toggleBookmark(widget.feed);
+                  },
+                ),
               ],
             ),
           ),
